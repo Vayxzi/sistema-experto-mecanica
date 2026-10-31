@@ -1,13 +1,17 @@
 import psycopg2
 import psycopg2.extras
 import re
+import os
+from dotenv import load_dotenv
 
-# Configuración de las credenciales de PostgreSQL
-DB_HOST = "localhost"
-DB_NAME = "mecanicadb"
-DB_USER = "carros"
-DB_PASS = "Admin123!"
-DB_PORT = "5432"
+load_dotenv()
+
+# Configuración de las credenciales de PostgreSQL de forma segura
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_NAME = os.getenv("DB_NAME", "mecanicadb")
+DB_USER = os.getenv("DB_USER", "postgres")
+DB_PASS = os.getenv("DB_PASS", "")
+DB_PORT = os.getenv("DB_PORT", "5432")
 
 def get_connection():
     """Establece y retorna la conexión a PostgreSQL usando las variables globales."""
@@ -44,6 +48,23 @@ def guardar_historial(origen, resultado, nivel_coincidencia):
     finally:
         cur.close()
         conn.close()
+        
+def limpiar_historial():
+    """Elimina todos los registros de la tabla historial_diagnosticos y reinicia el contador."""
+    conn = get_connection()
+    if not conn: return False
+    
+    try:
+        cur = conn.cursor()
+        cur.execute("TRUNCATE TABLE historial_diagnosticos RESTART IDENTITY;")
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error al limpiar el historial: {e}")
+        return False
+    finally:
+        cur.close()
+        conn.close()
 
 def obtener_historial():
     """Obtiene los últimos 50 diagnósticos ordenados por fecha."""
@@ -51,7 +72,6 @@ def obtener_historial():
     if not conn: return []
     
     try:
-        # Usamos to_char para que Postgres nos devuelva la fecha bonita con el salto de línea HTML
         cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cur.execute("""
             SELECT id_historial, 
@@ -241,6 +261,7 @@ def evaluar_diagnostico(sintomas_confirmados_ids, id_subsistema):
                     }
         
         return mejor_diagnostico
+    
 
     except Exception as e:
         print(f"Error durante el motor de inferencia: {e}")

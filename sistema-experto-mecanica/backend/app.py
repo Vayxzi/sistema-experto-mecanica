@@ -1,6 +1,6 @@
 import os
 import sys
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 
 # Configuramos rutas para importar el módulo de base de datos
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -13,7 +13,16 @@ from database import motor as db
 app = Flask(__name__, template_folder=FRONTEND_DIR)
 app.secret_key = 'super_secreta_uees_2026'
 
-# --- RUTAS DE LAS PANTALLAS ---
+# Configuramos rutas para importar el módulo de base de datos
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+PROJECT_ROOT = os.path.join(BASE_DIR, '..')
+FRONTEND_DIR = os.path.join(PROJECT_ROOT, 'frontend')
+sys.path.append(PROJECT_ROOT)
+
+from database import motor as db
+
+app = Flask(__name__, template_folder=FRONTEND_DIR)
+app.secret_key = 'super_secreta_uees_2026'
 
 @app.route('/chatbot')
 def chatbot():
@@ -64,8 +73,6 @@ def historial():
 def acerca():
     return render_template('acerca.html')
 
-
-# --- RUTAS DE LA API (MOTOR DE INFERENCIA Y CHATBOT OBD-II) ---
 
 @app.route('/api/chat', methods=['POST'])
 def api_chat():
@@ -140,6 +147,13 @@ def responder():
         return jsonify({"estado": "ok", "siguiente": "resultado"})
         
     return jsonify({"estado": "ok", "siguiente": "continuar"})
+
+@app.route('/limpiar-historial', methods=['POST'])
+def limpiar_historial_route():
+    # Llama a la función del motor para vaciar la base de datos
+    db.limpiar_historial()
+    # Recarga la página del historial vacía
+    return redirect(url_for('historial'))
 
 if __name__ == '__main__':
     app.run(debug=True)
