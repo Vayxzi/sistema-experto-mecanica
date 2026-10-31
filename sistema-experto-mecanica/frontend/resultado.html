@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="bg-white p-5 rounded shadow-sm w-75 mx-auto">
+    <div class="text-center mb-4">
+        <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
+        <h5 class="text-muted mt-2">Posible falla detectada</h5>
+        <h2 class="fw-bold">{{ falla }}</h2>
+        <i class="bi bi-exclamation-triangle text-warning mt-3 d-block" style="font-size: 4rem;"></i>
+    </div>
+    
+    <div class="mb-4">
+        <div class="d-flex justify-content-between">
+            <span class="fw-bold">Nivel de coincidencia (Certeza)</span>
+            <span class="fw-bold text-success">{{ certeza }}</span>
+        </div>
+        <div class="progress mt-2" style="height: 12px;">
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ certeza }};"></div>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <h6 class="fw-bold">Recomendación del sistema</h6>
+        <p class="text-muted small">{{ recomendacion }}</p>
+    </div>
+
+    <!-- Botones corregidos: el de la derecha ahora limpia y regresa al inicio para elegir categoría -->
+    <div class="d-flex justify-content-center gap-3 mt-4">
+        <a href="{{ url_for('consejos') }}" class="btn btn-primary px-4 rounded-pill fw-bold">Ver consejos generales</a>
+        <a href="{{ url_for('inicio') }}" class="btn btn-outline-secondary px-4 rounded-pill fw-bold">
+            <i class="bi bi-arrow-counterclockwise"></i> Elegir otra categoría
+        </a>
+    </div>
+</div>
+{% endblock %}

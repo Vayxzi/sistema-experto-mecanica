@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="bg-white p-4 rounded shadow-sm w-100 mx-auto">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">Historial de diagnósticos</h4>
+        <span class="badge bg-primary fs-6">{{ registros|length }} registros</span>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Método</th>
+                    <th>Resultado detectado</th>
+                    <th>Nivel de coincidencia</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reg in registros %}
+                <tr>
+                    <!-- safe permite que el <br> de la base de datos se lea como salto de línea HTML -->
+                    <td class="text-muted small">{{ reg.fecha_fmt | safe }}</td>
+                    
+                    <td>
+                        {% if reg.origen == 'Escáner OBD-II' %}
+                            <span class="badge bg-dark"><i class="bi bi-robot"></i> {{ reg.origen }}</span>
+                        {% else %}
+                            <span class="badge bg-info text-dark"><i class="bi bi-search"></i> {{ reg.origen }}</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td class="fw-bold">{{ reg.resultado }}</td>
+                    
+                    <td>
+                        {% if reg.nivel_coincidencia == '100%' or reg.nivel_coincidencia == '95%' %}
+                            <span class="badge bg-success">{{ reg.nivel_coincidencia }}</span>
+                        {% elif reg.nivel_coincidencia == 'N/A' %}
+                            <span class="badge bg-secondary">{{ reg.nivel_coincidencia }}</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">{{ reg.nivel_coincidencia }}</span>
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        <!-- El botón se podría conectar más adelante a ver un detalle, por ahora visual -->
+                        <a href="{{ url_for('resultado') }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                        <i class="bi bi-folder2-open fs-1 d-block mb-2"></i>
+                        Aún no hay diagnósticos registrados en el historial.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="bg-white p-5 rounded shadow-sm w-75 mx-auto position-relative">
+    
+    <!-- Botón superior para cancelar o reiniciar el diagnóstico -->
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <span class="text-muted fw-bold small" id="paso-indicador">DIAGNÓSTICO POR SÍNTOMAS EN CURSO</span>
+        <a href="{{ url_for('inicio') }}" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+            <i class="bi bi-x-circle"></i> Cancelar / Reiniciar
+        </a>
+    </div>
+    
+    <!-- Texto dinámico de la pregunta -->
+    <div class="text-center my-4">
+        <h3 class="fw-bold text-dark mb-4" id="texto-pregunta">Cargando pregunta...</h3>
+        <i class="bi bi-gear-wide-connected text-primary my-3" style="font-size: 5rem;"></i>
+    </div>
+    
+    <!-- Botones de respuesta Sí / No -->
+    <div class="d-flex justify-content-center gap-4 mt-5">
+        <button class="btn btn-outline-success btn-lg px-5 rounded-pill fw-bold" onclick="enviarRespuesta('si')">
+            <i class="bi bi-check-lg"></i> Sí
+        </button>
+        <button class="btn btn-outline-danger btn-lg px-5 rounded-pill fw-bold" onclick="enviarRespuesta('no')">
+            <i class="bi bi-x-lg"></i> No
+        </button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", cargarPregunta);
+
+    function cargarPregunta() {
+        fetch('/api/pregunta')
+            .then(response => response.json())
+            .then(data => {
+                if (data.estado === 'pregunta') {
+                    document.getElementById('texto-pregunta').innerText = data.texto;
+                } else if (data.estado === 'terminado') {
+                    window.location.href = "{{ url_for('resultado') }}";
+                }
+            })
+            .catch(error => console.error("Error al cargar pregunta:", error));
+    }
+
+    function enviarRespuesta(respuestaUsuario) {
+        fetch('/api/responder', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ respuesta: respuestaUsuario })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.siguiente === 'resultado' || data.siguiente.startsWith('fin_')) {
+                window.location.href = "{{ url_for('resultado') }}";
+            } else {
+                cargarPregunta();
+            }
+        })
+        .catch(error => console.error("Error al enviar respuesta:", error));
+    }
+</script>
+{% endblock %}
