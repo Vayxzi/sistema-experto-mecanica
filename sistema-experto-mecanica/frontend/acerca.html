@@ -1,26 +1,454 @@
+
 {% extends "base.html" %}
 
 {% block contenido %}
-<div class="bg-white p-5 rounded shadow-sm text-center w-75 mx-auto">
-    <h4 class="fw-bold mb-5">Acerca del sistema</h4>
-    
-    <i class="bi bi-gear-wide-connected text-primary mb-3 d-block" style="font-size: 5rem;"></i>
-    <h2 class="fw-bold text-dark">MECÁNICA EXPERTA</h2>
-    <span class="badge bg-secondary mb-4">Versión 1.0</span>
-    
-    <p class="text-muted mb-5 w-100 mx-auto">
-        Sistema experto desarrollado para apoyar el diagnóstico de fallas comunes en vehículos mediante reglas de inferencia y conocimiento especializado en mecánica básica.
-    </p>
 
-    <div class="border-top pt-4 mt-4">
-        <i class="bi bi-people fs-2 text-muted mb-2 d-block"></i>
-        <h6 class="fw-bold">Desarrollado por:</h6>
-        <p class="text-muted small mb-1">
-            IH (inteligencia humana).
-        </p>
-        <p class="text-muted small fw-bold mt-3">Estudiantes de Ingeniería en Sistemas Computacionales</p>
-        <p class="text-primary small fw-bold">Universidad Evangélica de El Salvador</p>
-        <p class="text-muted small">© 2026</p>
+<style>
+/* =====================================
+   ACERCA DE - MECÁNICA EXPERTA
+===================================== */
+
+.about-wrap {
+    width: 100%;
+    max-width: 1320px;
+    margin: 25px auto;
+    padding: 0 12px;
+    color: #102039;
+}
+
+.about-card {
+    width: 100%;
+    max-width: none;
+    min-height: 570px;
+    display: grid;
+    grid-template-columns: 330px minmax(0, 1fr);
+    background: #ffffff;
+    border: 1px solid #dce4ef;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(15, 35, 60, .10);
+}
+
+/* PANEL IZQUIERDO */
+
+.about-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 45px 30px;
+    color: #ffffff;
+    background:
+        radial-gradient(circle at 50% 15%, rgba(35, 115, 255, .30), transparent 45%),
+        linear-gradient(160deg, #18385f 0%, #0c1c32 55%, #071322 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.about-brand::before {
+    content: "";
+    position: absolute;
+    width: 230px;
+    height: 230px;
+    border: 1px solid rgba(100, 165, 255, .15);
+    border-radius: 50%;
+    box-shadow: 0 0 0 18px rgba(100, 165, 255, .035),
+                0 0 0 38px rgba(100, 165, 255, .025);
+}
+
+.about-hero-icon {
+    position: relative;
+    z-index: 1;
+    width: 105px;
+    height: 105px;
+    display: grid;
+    place-items: center;
+    color: #69aaff;
+    font-size: 3.6rem;
+    border: 1px solid rgba(105, 170, 255, .35);
+    border-radius: 27px;
+    background: rgba(255,255,255,.07);
+    box-shadow: 0 10px 30px rgba(0,0,0,.15);
+    margin-bottom: 28px;
+}
+
+.about-name {
+    position: relative;
+    z-index: 1;
+    color: #ffffff !important;
+    font-size: 2rem;
+    font-weight: 850;
+    line-height: 1.15;
+    letter-spacing: .02em;
+    margin: 0 0 17px;
+}
+
+.version-badge {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    color: #d8e8ff;
+    background: rgba(13, 110, 253, .20);
+    border: 1px solid rgba(91, 157, 255, .45);
+    border-radius: 999px;
+    font-size: .78rem;
+    font-weight: 750;
+}
+
+.version-badge::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: #27d17f;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(39, 209, 127, .6);
+}
+
+.about-tagline {
+    position: relative;
+    z-index: 1;
+    color: #bdcde2 !important;
+    font-size: .88rem;
+    margin: 19px 0 0;
+}
+
+/* PANEL DERECHO */
+
+.about-info {
+    display: flex;
+    flex-direction: column;
+    padding: 48px 52px 30px;
+    background: #ffffff;
+}
+
+.about-info .page-title {
+    display: inline-block;
+    color: #0866ed;
+    font-size: .76rem;
+    font-weight: 850;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.about-heading {
+    color: #101e33 !important;
+    font-size: clamp(1.55rem, 2.3vw, 2rem);
+    font-weight: 850;
+    line-height: 1.25;
+    letter-spacing: -.025em;
+    margin: 0 0 15px;
+}
+
+.about-desc {
+    color: #52647c !important;
+    font-size: .96rem;
+    line-height: 1.8;
+    max-width: 750px;
+    margin-bottom: 24px;
+}
+
+/* CARACTERÍSTICAS */
+
+.feature-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 26px;
+}
+
+.feature-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 15px;
+    color: #263c59 !important;
+    background: #f1f6fd;
+    border: 1px solid #dce7f5;
+    border-radius: 999px;
+    font-size: .81rem;
+    font-weight: 700;
+}
+
+.feature-chip i {
+    color: #086bfa;
+    font-size: .95rem;
+}
+
+/* INFORMACIÓN INSTITUCIONAL */
+
+.info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 15px 17px;
+    background: #f5f8fc;
+    border: 1px solid #e0e8f2;
+    border-radius: 13px;
+    transition: all .2s ease;
+}
+
+.info-item:hover {
+    background: #eff5ff;
+    border-color: #c7dcfb;
+    transform: translateX(3px);
+}
+
+.info-icon {
+    width: 45px;
+    height: 45px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    color: #086bfa;
+    background: #e2edff;
+    border: 1px solid #d3e3ff;
+    border-radius: 12px;
+    font-size: 1.2rem;
+}
+
+.info-label {
+    color: #647791 !important;
+    font-size: .69rem;
+    font-weight: 850;
+    letter-spacing: .10em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.info-value {
+    color: #14243a !important;
+    font-size: .91rem;
+    font-weight: 750;
+    line-height: 1.45;
+}
+
+.info-value small {
+    color: #65758b !important;
+    font-size: .82rem;
+    font-weight: 500;
+}
+
+/* PIE */
+
+.about-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding-top: 19px;
+    margin-top: auto;
+    border-top: 1px solid #e5eaf1;
+    color: #7889a0 !important;
+    font-size: .76rem;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+    .about-wrap {
+        max-width: 760px;
+    }
+
+    .about-card {
+        grid-template-columns: 260px minmax(0, 1fr);
+    }
+
+    .about-info {
+        padding: 35px 27px 25px;
+    }
+
+    .feature-chip {
+        font-size: .76rem;
+    }
+}
+
+@media (max-width: 650px) {
+    .about-wrap {
+        padding: 0 5px;
+        margin: 12px auto;
+    }
+
+    .about-card {
+        grid-template-columns: 1fr;
+    }
+
+    .about-brand {
+        padding: 35px 20px;
+    }
+
+    .about-hero-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 2.8rem;
+    }
+
+    .about-name {
+        font-size: 1.7rem;
+    }
+
+    .about-info {
+        padding: 30px 22px 22px;
+    }
+
+    .about-foot {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+</style>
+
+
+<div class="about-wrap">
+
+    <div class="app-card about-card">
+
+        <!-- PANEL IZQUIERDO: MARCA -->
+        <aside class="about-brand">
+
+            <div class="about-hero-icon">
+                <i class="bi bi-gear-wide-connected"></i>
+            </div>
+
+            <h1 class="about-name">
+                MECÁNICA<br>EXPERTA
+            </h1>
+
+            <span class="version-badge">
+                Versión 1.0
+            </span>
+
+            <p class="about-tagline">
+                Sistema experto de mecánica
+            </p>
+
+        </aside>
+
+
+        <!-- PANEL DERECHO: INFORMACIÓN -->
+        <section class="about-info">
+
+            <span class="page-title">
+                Acerca del sistema
+            </span>
+
+            <h2 class="about-heading">
+                Diagnóstico de fallas comunes en vehículos
+            </h2>
+
+            <p class="about-desc">
+                Sistema experto desarrollado para apoyar el diagnóstico
+                de fallas comunes en vehículos mediante reglas de inferencia
+                y conocimiento especializado en mecánica básica.
+            </p>
+
+
+            <!-- CARACTERÍSTICAS -->
+            <div class="feature-chips">
+
+                <span class="feature-chip">
+                    <i class="bi bi-diagram-3"></i>
+                    Reglas de inferencia
+                </span>
+
+                <span class="feature-chip">
+                    <i class="bi bi-wrench-adjustable"></i>
+                    Mecánica básica
+                </span>
+
+                <span class="feature-chip">
+                    <i class="bi bi-activity"></i>
+                    Diagnóstico de fallas
+                </span>
+
+            </div>
+
+
+            <!-- INFORMACIÓN INSTITUCIONAL -->
+            <div class="info-list">
+
+                <div class="info-item">
+
+                    <div class="info-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <div>
+                        <div class="info-label">
+                            Desarrollado por
+                        </div>
+
+                        <div class="info-value">
+                            IH <small>(inteligencia humana)</small>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <div class="info-icon">
+                        <i class="bi bi-mortarboard"></i>
+                    </div>
+
+                    <div>
+                        <div class="info-label">
+                            Carrera
+                        </div>
+
+                        <div class="info-value">
+                            Estudiantes de Ingeniería en Sistemas Computacionales
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <div class="info-icon">
+                        <i class="bi bi-bank"></i>
+                    </div>
+
+                    <div>
+                        <div class="info-label">
+                            Institución
+                        </div>
+
+                        <div class="info-value">
+                            Universidad Evangélica de El Salvador
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PIE DE PÁGINA -->
+            <div class="about-foot">
+
+                <span>© 2026 · Todos los derechos reservados</span>
+
+                <span>Mecánica Experta v1.0</span>
+
+            </div>
+
+        </section>
+
     </div>
+
 </div>
+
 {% endblock %}
